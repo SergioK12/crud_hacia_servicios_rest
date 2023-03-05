@@ -3,6 +3,7 @@ import 'package:crud_servicos/services/services.dart';
 import 'package:crud_servicos/ui/inputdecorations.dart';
 import 'package:crud_servicos/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ProductsView extends StatelessWidget {
@@ -29,9 +30,11 @@ class _ProductScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formprovider = Provider.of<ProductFormProvider>(context);
     return Scaffold(
       //appBar: AppBar(title: const Text("ProductosView"),),
       body: SingleChildScrollView(
+        //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             Stack(
@@ -73,7 +76,13 @@ class _ProductScreenBody extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save_as_outlined),
-        onPressed: () {},
+        onPressed: () async{
+          if (!formprovider.isValidForm()) return;
+          
+            await productservice.guardarOCrearProducto(formprovider.producto);
+          
+          formprovider.isValidForm();
+        },
       ),
     );
   }
@@ -84,8 +93,8 @@ class _FormularioDelProducto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productformprovider = Provider.of<ProductFormProvider>(context);
-    final producto = productformprovider.producto;
+    final productform = Provider.of<ProductFormProvider>(context);
+    final producto = productform.producto;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -94,50 +103,58 @@ class _FormularioDelProducto extends StatelessWidget {
         width: double.infinity,
         height: 350,
         child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            key: productform.formkey,
             child: Column(
-          children: [
-            const SizedBox(height: 30),
-            TextFormField(
-              initialValue: producto.nombre,
-              decoration: InputDecorations.authInputDecoration(
-                  labeltextt: 'Nombre del producto', hinText: 'Nombre:'),
-              onChanged: ((value) => producto.nombre = value),
-              validator: (value) {
-                // value.trim().toString().length < 1
-                if (value == null || value.trim().toString().isEmpty) {
-                  return "El campo es obligatorio";
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 30),
-            TextFormField(
-              initialValue: producto.precio.toString(),
-              keyboardType: TextInputType.number,
-              decoration: InputDecorations.authInputDecoration(
-                  labeltextt: '\$150', hinText: 'Precio:'),
-              onChanged: (value) {
-                if (double.tryParse(value) == null) {
-                  producto.precio = 0.0;
-                } else {
-                  producto.precio = double.parse(value);
-                }
-              },
-              validator: (value) {
-                // value.trim().toString().length < 1
-                if (value == null || value.trim().toString().isEmpty) {
-                  return "El campo es obligatorio";
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 30),
-            SwitchListTile.adaptive(
-                title: const Text("Disponible"),
-                value: producto.disponibilidad,
-                onChanged: (value) {})
-          ],
-        )),
+              children: [
+                const SizedBox(height: 30),
+                TextFormField(
+                  initialValue: producto.nombre,
+                  decoration: InputDecorations.authInputDecoration(
+                      labeltextt: 'Nombre del producto', hinText: 'Nombre:'),
+                  onChanged: ((value) => producto.nombre = value),
+                  validator: (value) {
+                    // value.trim().toString().length < 1
+                    if (value == null || value.trim().toString().isEmpty) {
+                      return "El campo es obligatorio";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 30),
+                TextFormField(
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'^(\d+)?\.?\d{0,2}'))
+                  ],
+                  initialValue: producto.precio.toString(),
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecorations.authInputDecoration(
+                      labeltextt: '\$150', hinText: 'Precio:'),
+                  onChanged: (value) {
+                    if (double.tryParse(value) == null) {
+                      producto.precio = 0.0;
+                    } else {
+                      producto.precio = double.parse(value);
+                    }
+                  },
+                  validator: (value) {
+                    // value.trim().toString().length < 1
+                    if (value == null || value.trim().toString().isEmpty) {
+                      return "El campo es obligatorio";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 30),
+                SwitchListTile.adaptive(
+                    title: const Text("Disponible"),
+                    value: producto.disponibilidad,
+                    onChanged: (value) {
+                      productform.actualizardisponibilidad(value);
+                    })
+              ],
+            )),
       ),
     );
   }
