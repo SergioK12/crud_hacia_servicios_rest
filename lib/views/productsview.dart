@@ -1,34 +1,50 @@
+import 'package:crud_servicos/services/services.dart';
 import 'package:crud_servicos/ui/inputdecorations.dart';
 import 'package:crud_servicos/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductsView extends StatelessWidget {
   const ProductsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+  final productservice = Provider.of<ProductsServices>(context);
     return Scaffold(
       //appBar: AppBar(title: const Text("ProductosView"),),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Stack(
-              children:  [
-                const ProductImage(),
-                Positioned(top: 20,left: 20,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_outlined,size: 40, color: Colors.white,),
-                  onPressed: (){Navigator.of(context).pop();},
-                )),
-
-                Positioned(top: 20,right: 20,
-                child: IconButton(
-                  icon: const Icon(Icons.camera_alt_outlined,size: 40, color: Colors.white,),
-                  onPressed: (){
-                    //Camara o galeria
-                    debugPrint("camara");
-                  },
-                )),
+              children: [
+                 ProductImage( imagenurl: productservice.selectedProduct?.imagen),
+                Positioned(
+                    top: 20,
+                    left: 20,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_outlined,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )),
+                Positioned(
+                    top: 20,
+                    right: 20,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.camera_alt_outlined,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        //Camara o galeria
+                        debugPrint("camara");
+                      },
+                    )),
               ],
             ),
             const _FormularioDelProducto(),
@@ -37,8 +53,8 @@ class ProductsView extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
-        child: const  Icon(Icons.save_as_outlined),
-        onPressed: (){},
+        child: const Icon(Icons.save_as_outlined),
+        onPressed: () {},
       ),
     );
   }
@@ -50,33 +66,28 @@ class _FormularioDelProducto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric( horizontal:10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
-        padding: const  EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         decoration: _buildboxdecoration(),
         width: double.infinity,
         height: 350,
-        child: Form(child: 
-        Column(
+        child: Form(
+            child: Column(
           children: [
             const SizedBox(height: 30),
             TextFormField(
               decoration: InputDecorations.authInputDecoration(
-                labeltextt: 'Nombre del producto',
-                hinText: 'Nombre:'),
+                  labeltextt: 'Nombre del producto', hinText: 'Nombre:'),
             ),
-            
             const SizedBox(height: 30),
-             TextFormField(
+            TextFormField(
               keyboardType: TextInputType.number,
               decoration: InputDecorations.authInputDecoration(
-                labeltextt: '\$150',
-                hinText: 'Precio:'),
+                  labeltextt: '\$150', hinText: 'Precio:'),
             ),
-            
             const SizedBox(height: 30),
-            Switch.adaptive(value: true, onChanged: (value){})
-
+            SwitchListTile.adaptive(title: const Text("Disponible"), value: true, onChanged: (value) {})
           ],
         )),
       ),
@@ -84,19 +95,15 @@ class _FormularioDelProducto extends StatelessWidget {
   }
 
   BoxDecoration _buildboxdecoration() {
-    return  BoxDecoration(
-      color: Colors.white,
-      borderRadius: const BorderRadius.only(
-        bottomLeft: Radius.circular(25),
-        bottomRight: Radius.circular(25)
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.05),
-          blurRadius: 5,
-          offset: const Offset(0, 5)
-        )
-      ]
-    );
+    return BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 5,
+              offset: const Offset(0, 5))
+        ]);
   }
 }

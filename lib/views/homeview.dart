@@ -22,8 +22,11 @@ class HomeView extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                     horizontal: (MediaQuery.of(context).size.height * 0.02)),
                 child: GestureDetector(
-                  child:  ProductCard(producto: lista[index]),
-                  onTap: () => Navigator.pushNamed(context, 'product'),
+                  child: ProductCard(producto: lista[index]),
+                  onTap: () {
+                    productprovider.selectedProduct = lista[index].copy();
+                    Navigator.pushNamed(context, 'product');
+                  },
                 ),
               )),
       floatingActionButton:
