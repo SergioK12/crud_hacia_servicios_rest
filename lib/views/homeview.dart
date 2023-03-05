@@ -13,7 +13,10 @@ class HomeView extends StatelessWidget {
         itemCount: 10,
         itemBuilder: (BuildContext context, index )=> Padding(
           padding:  EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.height * 0.02)),
-          child: const ProductCard(),
+          child: GestureDetector(
+            child: const ProductCard(),
+            onTap: ()=> Navigator.pushNamed(context, 'product'),),
+            
         )
 
 
