@@ -1,5 +1,6 @@
-import 'package:crud_servicos/services/product_service.dart';
+import 'package:crud_servicos/services/services.dart';
 import 'package:crud_servicos/widgets/widgets.dart';
+import 'package:crud_servicos/views/views.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,17 +9,20 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productprovider = Provider.of<ProductsServices>(context);
+    if (productprovider.isLoading == true) return const LoadingView();
+    final lista = productprovider.listadeproductos;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Productos'),
       ),
       body: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (BuildContext context, index) => Padding(
+          itemCount: lista.length,
+          itemBuilder: (context, index) => Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: (MediaQuery.of(context).size.height * 0.02)),
                 child: GestureDetector(
-                  child: const ProductCard(),
+                  child:  ProductCard(producto: lista[index]),
                   onTap: () => Navigator.pushNamed(context, 'product'),
                 ),
               )),
