@@ -3,6 +3,7 @@ import 'package:crud_servicos/services/services.dart';
 import 'package:crud_servicos/ui/inputdecorations.dart';
 import 'package:crud_servicos/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ProductsView extends StatelessWidget {
@@ -32,6 +33,7 @@ class _ProductScreenBody extends StatelessWidget {
     return Scaffold(
       //appBar: AppBar(title: const Text("ProductosView"),),
       body: SingleChildScrollView(
+        //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             Stack(
@@ -112,6 +114,9 @@ class _FormularioDelProducto extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             TextFormField(
+              inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^(\d+)?\.?\d{0,2}'))
+              ],
               initialValue: producto.precio.toString(),
               keyboardType: TextInputType.number,
               decoration: InputDecorations.authInputDecoration(
@@ -135,7 +140,9 @@ class _FormularioDelProducto extends StatelessWidget {
             SwitchListTile.adaptive(
                 title: const Text("Disponible"),
                 value: producto.disponibilidad,
-                onChanged: (value) {})
+                onChanged: (value) {
+                  productformprovider.actualizardisponibilidad(value);
+                })
           ],
         )),
       ),
