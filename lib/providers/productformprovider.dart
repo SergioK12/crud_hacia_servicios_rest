@@ -13,6 +13,9 @@ class ProductFormProvider extends ChangeNotifier {
   }
 
   bool isValidForm() {
+    debugPrint(producto.nombre);
+    debugPrint(producto.precio.toString());
+    debugPrint(producto.disponibilidad.toString());
     return formkey.currentState?.validate() ?? false;
   }
 }
