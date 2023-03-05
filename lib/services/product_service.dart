@@ -43,6 +43,7 @@ class ProductsServices extends ChangeNotifier {
     notifyListeners();
 
     if (producto.id == null) {
+      await crearProducto(producto);
     } else {
       actualizarProducto(producto);
     }
@@ -57,9 +58,24 @@ class ProductsServices extends ChangeNotifier {
     final decodeData = resp.body;
     debugPrint(decodeData);
 
-    final indice = listadeproductos.indexWhere((element) => element.id == productoaActualizar.id);
+    final indice = listadeproductos
+        .indexWhere((element) => element.id == productoaActualizar.id);
 
     listadeproductos[indice] = productoaActualizar;
     return productoaActualizar.id!;
+  }
+
+  Future<String> crearProducto(Producto productoNuevo) async {
+
+    final url = Uri.https(_baseUrl, 'Productos.json');
+    final resp = await http.post(url, body: productoNuevo.toJson());
+    final decodeData = json.decode(resp.body);
+    //debugPrint(decodeData);
+
+    productoNuevo.id = decodeData['name'];
+
+    listadeproductos.add(productoNuevo);
+    return productoNuevo.id!;
+    //return 'ok';
   }
 }
