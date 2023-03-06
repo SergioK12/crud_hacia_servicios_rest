@@ -4,6 +4,8 @@ import 'package:crud_servicos/views/views.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/models.dart';
+
 class HomeView extends StatelessWidget {
   const HomeView({Key? key}) : super(key: key);
   @override
@@ -30,7 +32,13 @@ class HomeView extends StatelessWidget {
                 ),
               )),
       floatingActionButton:
-          FloatingActionButton(child: const Icon(Icons.add), onPressed: () {}),
+          FloatingActionButton(child: const Icon(Icons.add), onPressed: () {
+            productprovider.selectedProduct = Producto(
+              disponibilidad: true,
+              nombre: ' ',
+              precio: 0.0);
+            Navigator.pushNamed(context, 'product');
+          }),
     );
   }
 }
