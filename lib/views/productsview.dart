@@ -4,6 +4,7 @@ import 'package:crud_servicos/ui/inputdecorations.dart';
 import 'package:crud_servicos/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProductsView extends StatelessWidget {
@@ -62,9 +63,16 @@ class _ProductScreenBody extends StatelessWidget {
                         size: 40,
                         color: Colors.white,
                       ),
-                      onPressed: () {
-                        //Camara o galeria
-                        debugPrint("camara");
+                      onPressed: () async{
+                        final picker = ImagePicker();
+                        final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
+
+                        if(photo == null){
+                          debugPrint("No hay foto");
+                          return;
+                        }
+
+                        debugPrint("Tenemos imagen ${photo.path}");
                       },
                     )),
               ],
@@ -76,7 +84,7 @@ class _ProductScreenBody extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save_as_outlined),
-        onPressed: () async{
+        onPressed: () async {
           if (!formprovider.isValidForm()) return;
           await productservice.guardarOCrearProducto(formprovider.producto);
           //formprovider.isValidForm();
