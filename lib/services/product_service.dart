@@ -31,9 +31,6 @@ class ProductsServices extends ChangeNotifier {
       listadeproductos.add(productoTemporal);
     });
 
-    if (kDebugMode) {
-      print(listadeproductos[0].nombre);
-    }
     isLoading = false;
     notifyListeners();
 
@@ -64,6 +61,7 @@ class ProductsServices extends ChangeNotifier {
         .indexWhere((element) => element.id == productoaActualizar.id);
 
     listadeproductos[indice] = productoaActualizar;
+    notifyListeners();
     return productoaActualizar.id!;
   }
 
@@ -104,8 +102,6 @@ class ProductsServices extends ChangeNotifier {
     final resp = await http.Response.fromStream(streamResponse);
 
     if (resp.statusCode != 200 && resp.statusCode == 201) {
-      print('Algo salio mal ');
-      print(resp.body);
       return null;
     }
     newPicture = null;
