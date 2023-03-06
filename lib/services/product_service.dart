@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:crud_servicos/models/product.dart';
 import 'package:flutter/foundation.dart';
@@ -9,6 +10,7 @@ class ProductsServices extends ChangeNotifier {
   bool isLoading = true;
   bool isSaving = false;
   Producto? selectedProduct;
+  File? newPicture;
 
   final List<Producto> listadeproductos = [];
 
@@ -66,7 +68,6 @@ class ProductsServices extends ChangeNotifier {
   }
 
   Future<String> crearProducto(Producto productoNuevo) async {
-
     final url = Uri.https(_baseUrl, 'Productos.json');
     final resp = await http.post(url, body: productoNuevo.toJson());
     final decodeData = json.decode(resp.body);
@@ -77,5 +78,11 @@ class ProductsServices extends ChangeNotifier {
     listadeproductos.add(productoNuevo);
     return productoNuevo.id!;
     //return 'ok';
+  }
+
+  void updateSelectedProduct(String path) {
+    selectedProduct!.imagen = path;
+    newPicture = File.fromUri(Uri(path: path));
+    notifyListeners();
   }
 }
